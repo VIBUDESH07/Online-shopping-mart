@@ -1,0 +1,155 @@
+* {
+  margin: 0;
+  outline: 0;
+  border: 0;
+}
+
+.head-home {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 10vh;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0px 2px 10px -5px black;
+}
+
+.head-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 16vh;
+  width: 98%;
+  margin: 1%;
+  box-shadow: 2px 2px 10px -5px black;
+}
+
+.head-carousel {
+  display: flex;
+  height: 24vh;
+  width: 98%;
+  margin: 1%;
+  box-shadow: 2px 2px 10px -5px black;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.search-container input[type="text"] {
+  width: 100%; /* Adjust width as needed */
+  background-color: lightgrey;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-container input[type="text"]:hover {
+  box-shadow: 2px 2px 7px -2px blue;
+}
+
+.search-icon {
+  margin-left: -2rem;
+  cursor: pointer;
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+}
+
+.login-button,
+.cart-button,
+.seller-button,
+.menu-button {
+  margin-left: 1rem;
+  font-size: 15px;
+  letter-spacing: 1.5px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+}
+
+.login-button:hover,
+.cart-button:hover,
+.seller-button:hover,
+.menu-button:hover {
+  background-color: black;
+  color: white;
+  transition: 0.5s ease;
+}
+
+.head-img {
+  display: flex;
+  flex-direction: column;
+}
+
+.head-p {
+  margin-left: 0.5rem;
+  color: black;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Media Query for Responsive Design */
+@media screen and (max-width: 768px) {
+  .head-home,
+  .head-nav,
+  .head-carousel {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+  }
+
+  .search-container input[type="text"] {
+    width: 80%; /* Adjust width as needed */
+  }
+
+  .button-container {
+    flex-direction: column; /* Stack buttons vertically on small screens */
+  }
+
+  .login-button,
+  .cart-button,
+  .seller-button,
+  .menu-button {
+    margin: 0.5rem 0; /* Add margin between buttons */
+    width: 80%; /* Adjust button width as needed */
+  }
+}
+/* Media Query for Responsive Design */
+@media screen and (max-width: 768px) {
+    .head-home,
+    .head-nav,
+    .head-carousel {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: auto;
+    }
+  
+    .search-container input[type="text"] {
+      width: 80%; /* Adjust width as needed */
+    }
+  
+    .button-container {
+      flex-direction: column; /* Stack buttons vertically on small screens */
+    }
+  
+    .login-button,
+    .cart-button,
+    .seller-button,
+    .menu-button {
+      margin: 0.5rem 0; /* Add margin between buttons */
+      width: 80%; /* Adjust button width as needed */
+    }
+  }
