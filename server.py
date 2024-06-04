@@ -1,42 +1,33 @@
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
-import os
+import base64
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # Connect to MongoDB
 client = MongoClient('mongodb://localhost:27017/')
 db = client['E-commerce']
 collection = db['Product details']
 
-# Define the directory to save uploaded images
-UPLOAD_FOLDER = 'uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Function to save uploaded image
-def save_image(image):
-    if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)
-    image_path = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
-    image.save(image_path)
-    return image_path
-
-@app.route('/products', methods=['POST'])
+@app.route('/product', methods=['POST'])
 def insert_product():
-    # Get product data from request.json
-    product_data = request.json
-    # Remove _id field if present
-    product_data.pop('_id', None)
+    # Get product data from request.form
+    product_data = request.form.to_dict()
+    
     # Check if request contains file
     if 'image' in request.files:
         image = request.files['image']
-        # Save the image and get its path
-        image_path = save_image(image)
-        # Add image path to product data
-        product_data['image'] = image_path
-    # Insert product data into MongoDB collection
+        image_base64 = base64.b64encode(image.read()).decode('utf-8')
+        product_data['image'] = image_base64
     collection.insert_one(product_data)
     return jsonify({'message': 'Product added successfully'}), 201
+
+@app.route('/products', methods=['GET'])
+def get_products():
+    products = list(collection.find({}, {"_id": 0}))  # Fetch all products, excluding the _id field
+    return jsonify(products)
 
 if __name__ == '__main__':
     app.run(debug=True)
