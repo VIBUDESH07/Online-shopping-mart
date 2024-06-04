@@ -1,12 +1,12 @@
-import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-import gro from'../pics/grocery.webp';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import gro from '../pics/grocery.webp';
 import mobile from '../pics/Mobile.webp';
 import travel from '../pics/travel.webp';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faShoppingCart, faUser, faStore, faEllipsisV } from '@fortawesome/free-solid-svg-icons'; 
+import { faSearch, faShoppingCart, faUser, faStore, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import '../Styles/Header.css';
 import main from '../pics/logo.svg';
 import logo1 from '../pics/1.webp';
@@ -14,8 +14,22 @@ import logo2 from '../pics/2.webp';
 import logo3 from '../pics/3.webp';
 import logo4 from '../pics/4.png';
 import logo5 from '../pics/5.png';
+import axios from 'axios';
 
 const Header = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/products')
+      .then(response => {
+        setProducts(response.data);
+        console.log(products);
+      })
+      .catch(error => {
+        console.error('Error fetching products:', error);
+      });
+  }, []);
+
   return (
     <div>
       <div className='head-home'>
@@ -94,6 +108,21 @@ const Header = () => {
             <img src={logo5} alt="Logo 5" />
           </div>
         </Carousel>
+      </div>
+      <div className='product-container'>
+        <h1>Product-List</h1>
+        <div className='product-grid'>
+          {products.map((product, index) => (
+            <div key={index} className='product-card'>
+              <img src={`data:image/jpeg;base64,${product.image}`} alt={product.name || 'Default Image'} className='product-image' />
+              <div className='product-info'>
+                <h3 className='product-title'>{product.name}</h3>
+                <p className='product-description'>{product.description}</p>
+                <p className='product-price'>Rs.${product.price}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
