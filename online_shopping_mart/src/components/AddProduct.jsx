@@ -41,7 +41,7 @@ const AddProduct = () => {
       // Append image file to FormData
       formData.append('image', product.image);
       
-      await axios.post('http://localhost:5000/products', formData, {
+      await axios.post('http://localhost:5000/product', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
