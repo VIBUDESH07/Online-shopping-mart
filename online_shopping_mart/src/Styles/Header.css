@@ -1,14 +1,17 @@
+/* Global Styles */
 * {
   margin: 0;
   outline: 0;
   border: 0;
+  box-sizing: border-box;
 }
 
+/* Header Styles */
 .head-home {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  height: 10vh;
+  padding: 1.1rem ;
   width: 100%;
   background-color: white;
   box-shadow: 0px 2px 10px -5px black;
@@ -32,6 +35,7 @@
   box-shadow: 2px 2px 10px -5px black;
 }
 
+/* Search Container Styles */
 .search-container {
   display: flex;
   align-items: center;
@@ -55,23 +59,10 @@
   cursor: pointer;
 }
 
-.button-container {
+/* Button Container Styles */
+.head-button-container {
   display: flex;
-  align-items: center;
-}
-.product-pricing {
-  display: flex;
-  align-items: center;
-}
-
-.product-original-price {
-  text-decoration: line-through;
-  color: #777;
-  margin-right: 10px;
-}
-
-.product-discount-price {
-  color: #E53935; /* or any color that indicates a special price */
+  
 }
 
 .login-button,
@@ -99,6 +90,7 @@
   transition: 0.5s ease;
 }
 
+/* Navigation Image Styles */
 .head-img {
   display: flex;
   flex-direction: column;
@@ -111,62 +103,92 @@
 
 a {
   text-decoration: none;
+  color: inherit;
 }
+
+/* Product Container Styles */
 .product-container {
   display: flex;
   flex-direction: column;
-  height:50vh;
-  width:94%;
-  padding: 20px;
+  justify-content: flex-start;
+  width:95%;
+  margin: 2.5%;
+  box-shadow: 0px 2px 10px -5px black;
   margin-top: 8%;
-  margin-left: 1.5%;
-  margin-right: 2.5%;
-  box-shadow: 0px 4px 10px black;
-  border-radius: 20px;
+  padding: 2%;
 }
 
 .product-grid {
-  margin:2%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5rem;
+ 
+}
+
+.product-card-link {
+  text-decoration: none;
+  color: inherit;
 }
 
 .product-card {
-  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 300px; 
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+  align-items: center;
+  
+  transition: transform 0.3s ease-in-out;
+}
+
+.product-card:hover {
+  transform: scale(1.05);
 }
 
 .product-image {
-  width: 200px; /* Set a fixed width */
-  height: 200px; /* Set a fixed height */
-  object-fit: cover; /* This will cover the area without stretching the image */
+  width: 100%;
+   
+  object-fit: cover;
 }
 
 .product-info {
-  padding: 16px;
+  padding: 10px;
+  text-align: center;
 }
 
 .product-title {
-  margin: 0;
-  font-size: 1.2em;
-  color: #333;
+  font-size: 18px;
+  margin: 10px 0;
 }
 
-.product-description {
-  font-size: 0.9em;
-  color: #666;
+.product-pricing {
+  display: flex;
+  justify-content: center;
+  gap:1rem;
+  width: 100%;
 }
 
-.product-price {
-  font-size: 1.1em;
-  color: #333;
-  margin-top: 8px;
+.product-original-price {
+  text-decoration: line-through;
+  color: #888;
 }
 
-/* Media Query for Responsive Design */
+.product-discount-price {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.product-offer-timing {
+  color: #2c3e50;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Responsive Design */
 @media screen and (max-width: 768px) {
   .head-home,
   .head-nav,
@@ -192,31 +214,13 @@ a {
     margin: 0.5rem 0; /* Add margin between buttons */
     width: 80%; /* Adjust button width as needed */
   }
-}
-/* Media Query for Responsive Design */
-@media screen and (max-width: 768px) {
-    .head-home,
-    .head-nav,
-    .head-carousel {
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: auto;
-    }
-  
-    .search-container input[type="text"] {
-      width: 80%; /* Adjust width as needed */
-    }
-  
-    .button-container {
-      flex-direction: column; /* Stack buttons vertically on small screens */
-    }
-  
-    .login-button,
-    .cart-button,
-    .seller-button,
-    .menu-button {
-      margin: 0.5rem 0; /* Add margin between buttons */
-      width: 80%; /* Adjust button width as needed */
-    }
+
+  .product-grid {
+    flex-direction: column;
+    align-items: center;
   }
+
+  .product-card {
+    width: 90%;
+  }
+}
