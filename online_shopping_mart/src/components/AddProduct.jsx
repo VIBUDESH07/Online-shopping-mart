@@ -9,10 +9,12 @@ const AddProduct = () => {
     name: '',
     description: '',
     offers: '',
+    type:'',
     discount: '',
     price: '',
     stock_left: '',
     stock_timing: '',
+    offer_end_time: '', // Add offer_end_time field
     image: null // Add image field to store selected image
   });
 
@@ -34,10 +36,12 @@ const AddProduct = () => {
       formData.append('name', product.name);
       formData.append('description', product.description);
       formData.append('offers', product.offers);
+      formData.append('type',product.type);
       formData.append('discount', product.discount);
       formData.append('price', product.price);
       formData.append('stock_left', product.stock_left);
       formData.append('stock_timing', product.stock_timing);
+      formData.append('offer_end_time', product.offer_end_time); // Append offer_end_time
       // Append image file to FormData
       formData.append('image', product.image);
       
@@ -50,11 +54,13 @@ const AddProduct = () => {
       setProduct({
         name: '',
         description: '',
+        type:'',
         offers: '',
         discount: '',
         price: '',
         stock_left: '',
         stock_timing: '',
+        offer_end_time: '', // Reset offer_end_time
         image: null
       });
     } catch (error) {
@@ -83,6 +89,10 @@ const AddProduct = () => {
           <input type="text" name="discount" value={product.discount} onChange={handleChange} />
         </div>
         <div className="form-group">
+          <label>type:</label>
+          <input type="text" name="type" value={product.type} onChange={handleChange} />
+        </div>
+        <div className="form-group">
           <label>Price:</label>
           <input type="text" name="price" value={product.price} onChange={handleChange} />
         </div>
@@ -93,6 +103,10 @@ const AddProduct = () => {
         <div className="form-group">
           <label>Stock Timing:</label>
           <input type="text" name="stock_timing" value={product.stock_timing} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Offer End Time:</label>
+          <input type="datetime-local" name="offer_end_time" value={product.offer_end_time} onChange={handleChange} />
         </div>
         <div className="form-group">
           <label>Image:</label>
