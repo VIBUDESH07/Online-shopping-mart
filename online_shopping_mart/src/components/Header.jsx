@@ -112,16 +112,22 @@ const Header = () => {
       <div className='product-container'>
         <h1>Product-List</h1>
         <div className='product-grid'>
-          {products.map((product, index) => (
-            <div key={index} className='product-card'>
-              <img src={`data:image/jpeg;base64,${product.image}`} alt={product.name || 'Default Image'} className='product-image' />
-              <div className='product-info'>
-                <h3 className='product-title'>{product.name}</h3>
-                <p className='product-description'>{product.description}</p>
-                <p className='product-price'>Rs.${product.price}</p>
-              </div>
-            </div>
-          ))}
+        {products.map((product, index) => (
+  <Link to={`/product/${product._id}`} key={index} className='product-card-link'>
+    <div className='product-card'>
+      <img src={`data:image/jpeg;base64,${product.image}`} alt={product.name || 'Default Image'} className='product-image' />
+      <div className='product-info'>
+        <h3 className='product-title'>{product.name}</h3>
+        <p>{product.description}</p>
+        <div className='product-pricing'>
+          <p className='product-original-price'>Rs.{product.price}</p>
+          <p className='product-discount-price'>Rs.{product.discount}</p>
+        </div>
+      </div>
+    </div>
+  </Link>
+))}
+
         </div>
       </div>
     </div>

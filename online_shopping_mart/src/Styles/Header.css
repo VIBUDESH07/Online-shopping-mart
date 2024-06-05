@@ -59,6 +59,20 @@
   display: flex;
   align-items: center;
 }
+.product-pricing {
+  display: flex;
+  align-items: center;
+}
+
+.product-original-price {
+  text-decoration: line-through;
+  color: #777;
+  margin-right: 10px;
+}
+
+.product-discount-price {
+  color: #E53935; /* or any color that indicates a special price */
+}
 
 .login-button,
 .cart-button,
@@ -108,6 +122,7 @@ a {
   margin-left: 1.5%;
   margin-right: 2.5%;
   box-shadow: 0px 4px 10px black;
+  border-radius: 20px;
 }
 
 .product-grid {
@@ -125,9 +140,9 @@ a {
 }
 
 .product-image {
-  width: 100%;
-  height: auto;
-  display: block;
+  width: 200px; /* Set a fixed width */
+  height: 200px; /* Set a fixed height */
+  object-fit: cover; /* This will cover the area without stretching the image */
 }
 
 .product-info {

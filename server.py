@@ -5,18 +5,14 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
-
-# Connect to MongoDB
 client = MongoClient('mongodb://localhost:27017/')
 db = client['E-commerce']
 collection = db['Product details']
 
 @app.route('/product', methods=['POST'])
 def insert_product():
-    # Get product data from request.form
     product_data = request.form.to_dict()
     
-    # Check if request contains file
     if 'image' in request.files:
         image = request.files['image']
         image_base64 = base64.b64encode(image.read()).decode('utf-8')
@@ -26,7 +22,9 @@ def insert_product():
 
 @app.route('/products', methods=['GET'])
 def get_products():
-    products = list(collection.find({}, {"_id": 0}))  # Fetch all products, excluding the _id field
+    products = list(collection.find({}))
+    for product in products:
+        product['_id']=str(product['_id'])
     return jsonify(products)
 
 if __name__ == '__main__':
