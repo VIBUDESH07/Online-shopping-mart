@@ -1,58 +1,89 @@
-// AddProduct.css
-
+/* Styles for the Add Product form */
 .container {
-  max-width: 600px;
-  margin: auto;
+  max-width: 800px;
+  margin: 0 auto;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
   background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
-  margin-top: 0;
-}
-
-.form-group {
+  text-align: center;
+  color: #333;
   margin-bottom: 20px;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
 .form-group label {
-  display: block;
   margin-bottom: 5px;
+  color: #555;
+  font-weight: bold;
 }
 
-.form-group input[type="text"],
+.form-group input,
 .form-group textarea {
-  width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   font-size: 16px;
-}
-
-.form-group input[type="text"] {
-  height: 40px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-group textarea {
-  height: 100px;
+  resize: vertical;
+  min-height: 100px;
 }
 
 .button-container {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .button-container button {
   padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
+  background-color: #28a745;
+  color: white;
   font-size: 16px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .button-container button:hover {
-  background-color: #0056b3;
+  background-color: #218838;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+
+  .form-group {
+    flex-direction: column;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 14px;
+  }
+
+  .button-container button {
+    width: 100%;
+    padding: 10px;
+  }
 }
