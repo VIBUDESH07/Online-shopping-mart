@@ -1,3 +1,4 @@
+// Header.js
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import gro from '../pics/grocery.webp';
@@ -15,6 +16,7 @@ import logo3 from '../pics/3.webp';
 import logo4 from '../pics/4.png';
 import logo5 from '../pics/5.png';
 import axios from 'axios';
+import ProductListPage from './ProductList'; // Import the new component
 
 const Header = () => {
   const [products, setProducts] = useState([]);
@@ -23,12 +25,19 @@ const Header = () => {
     axios.get('http://localhost:5000/products')
       .then(response => {
         setProducts(response.data);
-        console.log(products);
       })
       .catch(error => {
         console.error('Error fetching products:', error);
       });
   }, []);
+
+  const groupedProducts = products.reduce((acc, product) => {
+    if (!acc[product.type]) {
+      acc[product.type] = [];
+    }
+    acc[product.type].push(product);
+    return acc;
+  }, {});
 
   return (
     <div>
@@ -40,22 +49,22 @@ const Header = () => {
           <input type="text" placeholder="Search..." />
           <FontAwesomeIcon icon={faSearch} className="search-icon" />
         </div>
-        <div className="button-container">
+        <div className="head-button-container">
           <Link to="/login" className="login-button">
             <FontAwesomeIcon icon={faUser} /> Login
           </Link>
         </div>
-        <div className="button-container">
+        <div className="head-button-container">
           <Link to="/cart" className="cart-button">
             <FontAwesomeIcon icon={faShoppingCart} /> Cart
           </Link>
         </div>
-        <div className="button-container">
+        <div className="head-button-container">
           <Link to="/seller" className="seller-button">
             <FontAwesomeIcon icon={faStore} /> Become a Seller
           </Link>
         </div>
-        <div className="button-container">
+        <div className="head-button-container">
           <Link to="/menu" className="menu-button">
             <FontAwesomeIcon icon={faEllipsisV} />
           </Link>
@@ -109,27 +118,11 @@ const Header = () => {
           </div>
         </Carousel>
       </div>
-      <div className='product-container'>
-        <h1>Product-List</h1>
-        <div className='product-grid'>
-        {products.map((product, index) => (
-  <Link to={`/product/${product._id}`} key={index} className='product-card-link'>
-    <div className='product-card'>
-      <img src={`data:image/jpeg;base64,${product.image}`} alt={product.name || 'Default Image'} className='product-image' />
-      <div className='product-info'>
-        <h3 className='product-title'>{product.name}</h3>
-        <p>{product.description}</p>
-        <div className='product-pricing'>
-          <p className='product-original-price'>Rs.{product.price}</p>
-          <p className='product-discount-price'>Rs.{product.discount}</p>
+      {Object.entries(groupedProducts).map(([type, products]) => (
+        <div key={type}>
+          <ProductListPage type={type} products={products.slice(0, 4)} />
         </div>
-      </div>
-    </div>
-  </Link>
-))}
-
-        </div>
-      </div>
+      ))}
     </div>
   );
 };
