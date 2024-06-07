@@ -20,6 +20,7 @@ import ProductListPage from './ProductList'; // Import the new component
 
 const Header = () => {
   const [products, setProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     axios.get('http://localhost:5000/products')
@@ -31,7 +32,17 @@ const Header = () => {
       });
   }, []);
 
-  const groupedProducts = products.reduce((acc, product) => {
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredProducts = products.filter(product => 
+    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.discount.toString().includes(searchQuery)||
+    product.description.toString().includes(searchQuery.toLowerCase())
+  );
+
+  const groupedProducts = filteredProducts.reduce((acc, product) => {
     if (!acc[product.type]) {
       acc[product.type] = [];
     }
@@ -46,7 +57,12 @@ const Header = () => {
           <img src={main} className='head-logo' alt="Logo" />
         </div>
         <div className="search-container">
-          <input type="text" placeholder="Search..." />
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
           <FontAwesomeIcon icon={faSearch} className="search-icon" />
         </div>
         <div className="head-button-container">
@@ -71,7 +87,7 @@ const Header = () => {
         </div>
       </div>
       <div className='head-nav'>
-        <div className='head-img'>       
+        <div className='head-img'>
           <Link to="/grocery">
             <img src={gro} alt="Grocery" />
             <p className='head-p'>Grocery</p>
@@ -94,11 +110,11 @@ const Header = () => {
         <Carousel
           showArrows={true}
           showThumbs={false}
-          showStatus={false}   
+          showStatus={false}
           infiniteLoop={true}
           autoPlay={true}
-          interval={1500}
-          stopOnHover={true}    
+          interval={2000}
+          stopOnHover={true}
           transitionTime={500}
         >
           <div>
