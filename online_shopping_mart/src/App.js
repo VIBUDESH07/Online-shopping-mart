@@ -4,8 +4,9 @@ import { Route, Routes, useParams } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
 import AddProduct from './components/AddProduct';
-import ProductList from './components/ProductList';
 import Product from './components/Product';
+import SignUp from './components/SignUp';
+import Login from './components/Login';
 
 function App() {
   return (
@@ -15,9 +16,9 @@ function App() {
 
       {/* Route to the AddProduct component */}
       <Route path="/add" element={<AddProduct />} />
-
-      {/* Route to the ProductList component with dynamic type */}
-      <Route path="/products/:type" element={<ProductRoute />} />
+      <Route path="/signup" element={<SignUp />} />
+    <Route path="/login" element={<Login/>}/>
+       <Route path="/products/:type" element={<ProductRoute />} />
     </Routes>
   );
 }
