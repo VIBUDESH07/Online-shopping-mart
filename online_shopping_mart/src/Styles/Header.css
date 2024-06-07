@@ -11,17 +11,23 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  padding: 1.1rem ;
+  padding: 1.1rem;
   width: 100%;
   background-color: white;
   box-shadow: 0px 2px 10px -5px black;
+  position: fixed;
+  top:0;
+  left:0;
+  z-index: 1000;
+ 
+   
 }
-
 .head-nav {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   height: 16vh;
+  margin-top: 6% !important;
   width: 98%;
   margin: 1%;
   box-shadow: 2px 2px 10px -5px black;
@@ -97,6 +103,7 @@
 }
 
 .head-p {
+
   margin-left: 0.5rem;
   color: black;
 }
