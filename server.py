@@ -1,14 +1,13 @@
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
-import base64
 from flask_cors import CORS
-from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
 client = MongoClient('mongodb://localhost:27017/')
 db = client['E-commerce']
-collection = db['Product details']
+product_collection = db['Product details']
+user_collection = db['User']
 
 @app.route('/product', methods=['POST'])
 def insert_product():
@@ -21,12 +20,12 @@ def insert_product():
     if 'offer_end_time' in product_data:
         product_data['offer_end_time'] = datetime.strptime(product_data['offer_end_time'], '%Y-%m-%dT%H:%M')
 
-    collection.insert_one(product_data)
+    product_collection.insert_one(product_data)
     return jsonify({'message': 'Product added successfully'}), 201
 
 @app.route('/products', methods=['GET'])
 def get_products():
-    products = list(collection.find({}))
+    products = list(product_collection.find({}))
 
     for product in products:
         product['_id'] = str(product['_id'])
@@ -41,10 +40,11 @@ def get_products():
             product['remaining_offer_time'] = None
 
     return jsonify(products)
+
 @app.route('/product_specific/<product_type>', methods=['GET'])
 def get_products_by_type(product_type):
     print(product_type)
-    products = list(collection.find({'type': product_type}))
+    products = list(product_collection.find({'type': product_type}))
 
     if products:
         for product in products:
@@ -63,6 +63,28 @@ def get_products_by_type(product_type):
     else:
         return jsonify({'message': 'No products found for the specified type'}), 404
 
+@app.route('/signup', methods=['POST'])
+def signup():
+    user_data = request.json
+
+    # Validate user data
+    if not user_data.get('username') or not user_data.get('email') or not user_data.get('password'):
+        return jsonify({'error': 'Username, email, and password are required'}), 400
+
+    # Prepare user data
+    user = {
+        'username': user_data['username'],
+        'email': user_data['email'],
+        'password': user_data['password'],
+        'address': user_data.get('address'),
+        'upiId': user_data.get('upiId'),
+        'pin': user_data.get('pin')
+    }
+
+    # Insert user into the database
+    user_collection.insert_one(user)
+
+    return jsonify({'message': 'User registered successfully'}), 201
 
 if __name__ == '__main__':
     app.run(debug=True)
