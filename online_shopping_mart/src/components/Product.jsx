@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../Styles/Product.css'
+import '../Styles/Product.css';
+
 const Product = ({ type }) => {
   const [products, setProducts] = useState([]);
+  const [timeLeft, setTimeLeft] = useState({});
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -38,6 +40,20 @@ const Product = ({ type }) => {
     }
   };
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const updatedTimeLeft = products.reduce((acc, product) => {
+        if (product.offer_end_time) {
+          acc[product._id] = calculateTimeLeft(product.offer_end_time);
+        }
+        return acc;
+      }, {});
+      setTimeLeft(updatedTimeLeft);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [products]);
+
   return (
     <div>
       <h2>Products of type: {type}</h2>
@@ -54,7 +70,7 @@ const Product = ({ type }) => {
                   <p className='s-product-discount-price'>Rs.{product.discount}</p>
                 </div>
                 {product.offer_end_time && (
-                  <p className='s-product-offer-timing'>Offer ends in: {calculateTimeLeft(product.offer_end_time)}</p>
+                  <p className='s-product-offer-timing'>Offer ends in: {timeLeft[product._id]}</p>
                 )}
               </div>
             </div>
