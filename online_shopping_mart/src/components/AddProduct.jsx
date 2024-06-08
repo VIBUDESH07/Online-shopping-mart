@@ -20,7 +20,6 @@ const AddProduct = () => {
 
   const handleChange = e => {
     if (e.target.type === 'file') {
-      // Handle file upload separately
       setProduct({ ...product, image: e.target.files[0] });
     } else {
       const { name, value } = e.target;
