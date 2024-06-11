@@ -1,17 +1,20 @@
-// LoginPage.js
 import React, { useState } from 'react';
+import { useNavigate} from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
-import '../Styles/Auth.css'; // Assuming a separate CSS file for authentication styles
+import { faEnvelope, faLock, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+import '../Styles/Auth.css';
 
-const Login= () => {
+const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
 
   const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState('');
+  const history = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -27,20 +30,31 @@ const Login= () => {
     return errors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      // Handle successful form submission
-      console.log('Form data submitted:', formData);
+      try {
+        const response = await axios.post('http://localhost:5000/login', formData);
+        if (response.data.success) {
+          localStorage.setItem('username', response.data.username);
+          history('/');
+        } else {
+          setMessage(response.data.message);
+        }
+      } catch (error) {
+        console.error('Error logging in:', error);
+        setMessage('Error logging in');
+      }
     }
   };
 
   return (
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit}>
+        <FontAwesomeIcon icon={faUserCircle} className="user-icon" />
         <h2>Login</h2>
         
         <div className="form-group">
@@ -58,6 +72,8 @@ const Login= () => {
           <input type="password" name="password" value={formData.password} onChange={handleChange} />
           {errors.password && <p className="error">{errors.password}</p>}
         </div>
+        
+        {message && <p className="error">{message}</p>}
         
         <button type="submit" className="auth-button">Login</button>
         <p className='auth-p'>
