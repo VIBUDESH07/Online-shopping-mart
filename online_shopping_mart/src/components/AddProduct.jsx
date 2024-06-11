@@ -1,5 +1,3 @@
-// AddProduct.js
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../Styles/AddProduct.css'; // Import the CSS file
@@ -9,18 +7,22 @@ const AddProduct = () => {
     name: '',
     description: '',
     offers: '',
-    type:'',
+    type: '',
     discount: '',
     price: '',
     stock_left: '',
     stock_timing: '',
     offer_end_time: '', // Add offer_end_time field
-    image: null // Add image field to store selected image
+    frontImage: null, // Add front view image
+    backImage: null, // Add back view image
+    sideImage: null, // Add side view image
+    extraImage: null // Add extra view image
   });
 
   const handleChange = e => {
     if (e.target.type === 'file') {
-      setProduct({ ...product, image: e.target.files[0] });
+      const { name, files } = e.target;
+      setProduct({ ...product, [name]: files[0] });
     } else {
       const { name, value } = e.target;
       setProduct({ ...product, [name]: value });
@@ -35,15 +37,18 @@ const AddProduct = () => {
       formData.append('name', product.name);
       formData.append('description', product.description);
       formData.append('offers', product.offers);
-      formData.append('type',product.type);
+      formData.append('type', product.type);
       formData.append('discount', product.discount);
       formData.append('price', product.price);
       formData.append('stock_left', product.stock_left);
       formData.append('stock_timing', product.stock_timing);
       formData.append('offer_end_time', product.offer_end_time); // Append offer_end_time
-      // Append image file to FormData
-      formData.append('image', product.image);
-      
+      // Append image files to FormData
+      formData.append('frontImage', product.frontImage);
+      formData.append('backImage', product.backImage);
+      formData.append('sideImage', product.sideImage);
+      formData.append('extraImage', product.extraImage);
+
       await axios.post('http://localhost:5000/product', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -53,14 +58,17 @@ const AddProduct = () => {
       setProduct({
         name: '',
         description: '',
-        type:'',
+        type: '',
         offers: '',
         discount: '',
         price: '',
         stock_left: '',
         stock_timing: '',
         offer_end_time: '', // Reset offer_end_time
-        image: null
+        frontImage: null,
+        backImage: null,
+        sideImage: null,
+        extraImage: null
       });
     } catch (error) {
       console.error('Error adding product:', error);
@@ -84,12 +92,12 @@ const AddProduct = () => {
           <input type="text" name="offers" value={product.offers} onChange={handleChange} />
         </div>
         <div className="form-group">
-          <label>Discount:</label>
-          <input type="text" name="discount" value={product.discount} onChange={handleChange} />
+          <label>Type:</label>
+          <input type="text" name="type" value={product.type} onChange={handleChange} />
         </div>
         <div className="form-group">
-          <label>type:</label>
-          <input type="text" name="type" value={product.type} onChange={handleChange} />
+          <label>Discount:</label>
+          <input type="text" name="discount" value={product.discount} onChange={handleChange} />
         </div>
         <div className="form-group">
           <label>Price:</label>
@@ -108,8 +116,20 @@ const AddProduct = () => {
           <input type="datetime-local" name="offer_end_time" value={product.offer_end_time} onChange={handleChange} />
         </div>
         <div className="form-group">
-          <label>Image:</label>
-          <input type="file" name="image" onChange={handleChange} />
+          <label>Front View Image:</label>
+          <input type="file" name="frontImage" onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Back View Image:</label>
+          <input type="file" name="backImage" onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Side View Image:</label>
+          <input type="file" name="sideImage" onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Extra View Image:</label>
+          <input type="file" name="extraImage" onChange={handleChange} />
         </div>
         <div className="button-container">
           <button type="submit">Add Product</button>
