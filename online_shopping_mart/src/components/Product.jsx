@@ -61,7 +61,7 @@ const Product = ({ type }) => {
         {products.map(product => (
           <Link to={`/product/${product._id}`} className='s-product-card-link' key={product._id}>
             <div className='s-product-card'>
-              <img src={`data:image/jpeg;base64,${product.image}`} alt={product.name || 'Default Image'} className='s-product-image' />
+              <img src={`data:image/jpeg;base64,${product.frontImage}`} alt={product.name || 'Default Image'} className='s-product-image' />
               <div className='s-product-info'>
                 <h3 className='s-product-title'>{product.name}</h3>
                 <p>{product.description}</p>
