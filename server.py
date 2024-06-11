@@ -1,26 +1,178 @@
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from flask_cors import CORS
+from flask_mail import Mail, Message
+import random
 import datetime
 import base64
+from bson import ObjectId 
 
 app = Flask(__name__)
 CORS(app)
+
+# Configure Flask-Mail
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'vibudeshrb.22cse@kongu.edu'  # Replace with your Gmail address
+app.config['MAIL_PASSWORD'] = 'andx xznk qhsn aagi'  # Replace with your Gmail app password
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail = Mail(app)
 
 client = MongoClient('mongodb://localhost:27017/')
 db = client['E-commerce']
 product_collection = db['Product details']
 user_collection = db['User']
 
+# Temporary storage for OTPs
+otp_storage = {}
+
+def generate_otp():
+    # Generate a 6-digit random OTP
+    return ''.join(random.choices('0123456789', k=6))
+
+@app.route('/request-otp', methods=['POST'])
+def send_otp():
+    data = request.get_json()
+    email = data.get('email')
+    print(email)
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
+
+    otp = generate_otp()
+    print(otp)
+    otp_storage[email] = {
+        'otp': otp,
+        'expires_at': datetime.datetime.now() + datetime.timedelta(minutes=5)
+    }
+    print(otp_storage)
+
+    # Send OTP via email
+    try:
+        msg = Message('OTP for Verification', sender='vibudeshrb.22cse@kongu.edu', recipients=[email])
+        msg.body = f'Your OTP for verification is: {otp}'
+        mail.send(msg)
+        return jsonify({'success': True, 'message': 'OTP sent successfully'})
+    except Exception as e:
+        print(f"Failed to send OTP: {e}")
+        return jsonify({'error': 'Failed to send OTP'}), 500
+
+@app.route('/login', methods=['POST'])
+def login():
+    try:
+        data = request.json
+        email = data.get('email')
+        password = data.get('password')
+        
+        if not email or not password:
+            return jsonify({'success': False, 'message': 'Email and password are required'}), 400
+
+        user = user_collection.find_one({'email': email})
+        print(user,password)
+        if user and user['password'] == password:
+            return jsonify({'success': True, 'username': user['username']}), 200
+        else:
+            return jsonify({'success': False, 'message': 'Invalid email or password'}), 400
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+@app.route('/cart/<id>', methods=['POST'])
+def add_to_cart(id):
+    try:
+        # Get the username from localStorage (Assuming it's sent in the request)
+        username = request.json.get('username')
+
+        # Check if the product exists
+        product = product_collection.find_one({'_id': ObjectId(id)})
+        if not product:
+            return jsonify({'error': 'Product not found'}), 404
+
+        # Insert the product into the cart collection
+        cart_collection = db['Cart']
+        cart_collection.insert_one({
+            'username': username,
+            'product_id': id,
+            'product_name': product['name'],
+            'quantity': 1,  # You can adjust the quantity as needed
+            'timestamp': datetime.datetime.now()
+        })
+
+        return jsonify({'message': 'Product added to cart successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+    address = data.get('address')
+    upiId = data.get('upiId')
+    pin = data.get('pin')
+    otp = data.get('otp')
+
+    verification_result = verify_otp(email, otp)
+    if not verification_result['success']:
+        return jsonify({"success": False, "message": verification_result['message']}), 400
+
+    try:
+        # Insert new user into MongoDB
+        user_collection.insert_one({
+            'username': username,
+            'email': email,
+            'password': password,
+            'address': address,
+            'upiId': upiId,
+            'pin': pin
+        })
+
+        return jsonify({"success": True, "message": "Signup successful"}), 200
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+def verify_otp(email, otp):
+    if not email or not otp:
+        return {'success': False, 'message': 'Email and OTP are required'}
+
+    if email in otp_storage:
+        stored_otp = otp_storage[email]
+        if datetime.datetime.now() > stored_otp['expires_at']:
+            del otp_storage[email]
+            return {'success': False, 'message': 'OTP expired'}
+        if stored_otp['otp'] == otp:
+            del otp_storage[email]  # Remove OTP after successful verification
+            return {'success': True, 'message': 'OTP verified successfully'}
+    return {'success': False, 'message': 'Invalid OTP'}
+
+@app.route('/product/<id>', methods=['GET'])
+def get_product(id):
+    print(id)
+    try:
+        product = product_collection.find_one({'_id':  ObjectId(id)})
+        if product:
+            product['_id'] = str(product['_id'])
+            return jsonify(product), 200
+        else:
+            return jsonify({'error': 'Product not found'}), 404
+    except Exception as e:
+        print(e)
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/product', methods=['POST'])
 def insert_product():
     try:
         product_data = request.form.to_dict()
 
-        if 'image' in request.files:
-            image = request.files['image']
-            image_base64 = base64.b64encode(image.read()).decode('utf-8')
-            product_data['image'] = image_base64
+        # Handle image files
+        images = {}
+        for image_type in ['frontImage', 'backImage', 'sideImage', 'extraImage']:
+            if image_type in request.files:
+                image = request.files[image_type]
+                images[image_type] = base64.b64encode(image.read()).decode('utf-8')
+
+        product_data.update(images)
 
         if 'offer_end_time' in product_data:
             product_data['offer_end_time'] = datetime.datetime.strptime(product_data['offer_end_time'], '%Y-%m-%dT%H:%M')
@@ -46,7 +198,7 @@ def get_products():
                 product['remaining_offer_time'] = remaining_time.total_seconds()
             else:
                 product['remaining_offer_time'] = None
-        print(products)
+    
         return jsonify(products)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -72,32 +224,6 @@ def get_products_by_type(product_type):
             return jsonify(products)
         else:
             return jsonify({'message': 'No products found for the specified type'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/signup', methods=['POST'])
-def signup():
-    try:
-        user_data = request.json
-
-        # Validate user data
-        if not user_data.get('username') or not user_data.get('email') or not user_data.get('password'):
-            return jsonify({'error': 'Username, email, and password are required'}), 400
-
-        # Prepare user data
-        user = {
-            'username': user_data['username'],
-            'email': user_data['email'],
-            'password': user_data['password'],
-            'address': user_data.get('address'),
-            'upiId': user_data.get('upiId'),
-            'pin': user_data.get('pin')
-        }
-
-        # Insert user into the database
-        user_collection.insert_one(user)
-
-        return jsonify({'message': 'User registered successfully'}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
