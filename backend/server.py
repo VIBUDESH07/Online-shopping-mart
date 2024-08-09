@@ -57,7 +57,6 @@ def send_otp():
     except Exception as e:
         print(f"Failed to send OTP: {e}")
         return jsonify({'error': 'Failed to send OTP'}), 500
-
 @app.route('/login', methods=['POST'])
 def login():
     try:
@@ -69,13 +68,19 @@ def login():
             return jsonify({'success': False, 'message': 'Email and password are required'}), 400
 
         user = user_collection.find_one({'email': email})
-        print(user,password)
+        
+        # Debugging print statements - remove in production
+        print(user, password)
+        
         if user and user['password'] == password:
-            return jsonify({'success': True, 'username': user['username']}), 200
+            # Prepare user data excluding the password
+            user_data = {key: value for key, value in user.items() if key != 'password'}
+            return jsonify({'success': True, 'user': user_data}), 200
         else:
             return jsonify({'success': False, 'message': 'Invalid email or password'}), 400
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
+
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
