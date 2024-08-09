@@ -41,6 +41,21 @@ const Details = () => {
     fetchProduct();
   }, [id]);
 
+  const handleAddToCart = async () => {
+    try {
+      await axios.post('http://localhost:5000/cart/add', {
+        productId: product._id,
+        name: product.name,
+        price: product.price,
+        quantity: 1, // You can adjust this based on user input
+      });
+      alert('Product added to cart!');
+    } catch (err) {
+      console.error('Error adding product to cart:', err);
+      alert('Failed to add product to cart');
+    }
+  };
+
   if (loading && !product) {
     return <div className="loading">Loading...</div>;
   }
@@ -75,7 +90,6 @@ const Details = () => {
             </Carousel>
           </div>
           
-          <p className="product-name">{product.name}</p>
           <p className="product-description">{product.description}</p>
           <div className="pricing">
             <p className="original-price">₹{product.price}</p>
@@ -83,7 +97,7 @@ const Details = () => {
           </div>
           <p className="offer-end-time">Offer ends: {new Date(product.offer_end_time).toLocaleString()}</p>
           <button className="buy-now-btn">Buy Now</button>
-          <button className="add-to-cart-btn">Add to Cart</button>
+          <button className="add-to-cart-btn" onClick={handleAddToCart}>Add to Cart</button>
 
           <div className="similar-products">
             <h2>Similar Products</h2>
