@@ -38,14 +38,8 @@ const Login = () => {
     } else {
       try {
         const response = await axios.post('http://localhost:5000/login', formData);
+        console.log(response)
         if (response.data.success) {
-          // Store user details and login state in local storage
-          localStorage.setItem('username', response.data.username);
-          localStorage.setItem('email', response.data.email); // Example
-          localStorage.setItem('userId', response.data.userId); // Example
-          localStorage.setItem('loggedIn', 'true'); // Example to track login state
-
-          // Navigate to the home page or a secured page
           navigate('/');
         } else {
           setMessage(response.data.message);
