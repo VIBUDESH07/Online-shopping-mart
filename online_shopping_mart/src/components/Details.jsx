@@ -31,7 +31,7 @@ const Details = () => {
           setShowSpinner(false);
           setLoading(false);
           window.scrollTo(0, 0);
-        }, 2000); // 2 seconds delay
+        }, 500); // 2 seconds delay
       } catch (err) {
         setError('Error fetching product details');
         setLoading(false);
@@ -74,6 +74,8 @@ const Details = () => {
               </div>
             </Carousel>
           </div>
+          
+          <p className="product-name">{product.name}</p>
           <p className="product-description">{product.description}</p>
           <div className="pricing">
             <p className="original-price">₹{product.price}</p>
