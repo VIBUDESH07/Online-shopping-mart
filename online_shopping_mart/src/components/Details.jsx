@@ -23,17 +23,15 @@ const Details = () => {
         const response = await axios.get(`http://localhost:5000/product/${id}`);
         setProduct(response.data);
 
-        // Fetch similar products based on product type or category
         const similarResponse = await axios.get(`http://localhost:5000/product_specific/${response.data.type}`);
         setSimilarProducts(similarResponse.data);
-        console.log(similarResponse);
 
         setShowSpinner(true);
         setTimeout(() => {
           setShowSpinner(false);
           setLoading(false);
           window.scrollTo(0, 0);
-        }, 500); // 2 seconds delay
+        }, 2000); // 2 seconds delay
       } catch (err) {
         setError('Error fetching product details');
         setLoading(false);
@@ -48,7 +46,7 @@ const Details = () => {
   }
 
   if (showSpinner) {
-    return <div className="spinner">Loading new product...</div>; // Customize spinner style in CSS
+    return <div className="spinner">Loading new product...</div>;
   }
 
   if (error) {
@@ -59,7 +57,7 @@ const Details = () => {
     <div className="details-container">
       {product && (
         <>
-          <h1>{product.name}</h1>
+          <h1 className="product-name">{product.name}</h1>
           <div className="details-carousel">
             <Carousel>
               <div>
@@ -76,16 +74,14 @@ const Details = () => {
               </div>
             </Carousel>
           </div>
-          <p style={{color:red}}>{product.description}</p>
-          <p>Offers: {product.offers}</p>
-          <p>Type: {product.type}</p>
-          <p>Discount: {product.discount}</p>
-          <p>Price: {product.price}</p>
-          <p>Stock Left: {product.stock_left}</p>
-          <p>Stock Timing: {product.stock_timing}</p>
-          <p>Offer End Time: {new Date(product.offer_end_time).toLocaleString()}</p>
-          <button>Buy Now</button>
-          <button>Add to Cart</button>
+          <p className="product-description">{product.description}</p>
+          <div className="pricing">
+            <p className="original-price">₹{product.price}</p>
+            <p className="discounted-price">₹{product.price - product.discount}</p>
+          </div>
+          <p className="offer-end-time">Offer ends: {new Date(product.offer_end_time).toLocaleString()}</p>
+          <button className="buy-now-btn">Buy Now</button>
+          <button className="add-to-cart-btn">Add to Cart</button>
 
           <div className="similar-products">
             <h2>Similar Products</h2>
@@ -100,7 +96,7 @@ const Details = () => {
                     />
                     <div className="product-info">
                       <h3 className="product-title">{similarProduct.name}</h3>
-                      <p className="product-price">Price: {similarProduct.price}</p>
+                      <p className="product-price">Price: ₹{similarProduct.price}</p>
                       <button>View Details</button>
                     </div>
                   </div>
