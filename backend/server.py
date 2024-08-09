@@ -76,31 +76,6 @@ def login():
             return jsonify({'success': False, 'message': 'Invalid email or password'}), 400
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
-@app.route('/cart/<id>', methods=['POST'])
-def add_to_cart(id):
-    try:
-        # Get the username from localStorage (Assuming it's sent in the request)
-        username = request.json.get('username')
-
-        # Check if the product exists
-        product = product_collection.find_one({'_id': ObjectId(id)})
-        if not product:
-            return jsonify({'error': 'Product not found'}), 404
-
-        # Insert the product into the cart collection
-        cart_collection = db['Cart']
-        cart_collection.insert_one({
-            'username': username,
-            'product_id': id,
-            'product_name': product['name'],
-            'quantity': 1,  # You can adjust the quantity as needed
-            'timestamp': datetime.datetime.now()
-        })
-
-        return jsonify({'message': 'Product added to cart successfully'}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
@@ -159,6 +134,12 @@ def get_product(id):
     except Exception as e:
         print(e)
         return jsonify({'error': str(e)}), 500
+@app.route('/cart/add', methods=['POST'])
+def add_to_cart():
+    cart_collection = client.db.cart
+    data = request.json
+    cart_collection.insert_one(data)
+    return jsonify({'message': 'Product added to cart'}), 200
 
 @app.route('/product', methods=['POST'])
 def insert_product():
