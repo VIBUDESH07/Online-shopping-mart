@@ -42,7 +42,7 @@
 }
 
 .carousel .control-arrow, .carousel.carousel-slider .control-arrow {
-  background-color: rgba(209, 12, 12, 0.5); /* Background color for arrows */
+  background-color: rgba(222, 222, 222, 0.5); /* Background color for arrows */
   border-radius: 50%;
 }
 
