@@ -200,7 +200,7 @@ a {
   .head-home,
   .head-nav,
   .head-carousel {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
     height: auto;
