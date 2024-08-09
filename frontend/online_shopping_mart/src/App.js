@@ -6,7 +6,7 @@ import Header from './components/Header';
 import AddProduct from './components/AddProduct';
 import Product from './components/Product';
 import SignUp from './components/SignUp';
-import Login from './components/Login';
+import Login from './authentication/Login';
 import Details from './components/Details';
 
 function App() {
