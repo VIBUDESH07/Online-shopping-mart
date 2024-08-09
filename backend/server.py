@@ -20,7 +20,7 @@ app.config['MAIL_USE_SSL'] = True
 
 mail = Mail(app)
 
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb+srv://vibudesh:040705@cluster0.bojv6ut.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 db = client['E-commerce']
 product_collection = db['Product details']
 user_collection = db['User']
