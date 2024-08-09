@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
@@ -12,6 +12,7 @@ const Details = () => {
   const [loading, setLoading] = useState(true);
   const [showSpinner, setShowSpinner] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate(); // For navigation
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -42,6 +43,13 @@ const Details = () => {
   }, [id]);
 
   const handleAddToCart = async () => {
+    const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+
+    if (!isLoggedIn) {
+      alert('You need to be logged in to add items to the cart. Please log in.');
+      return;
+    }
+
     try {
       await axios.post('http://localhost:5000/cart/add', {
         productId: product._id,
@@ -54,6 +62,18 @@ const Details = () => {
       console.error('Error adding product to cart:', err);
       alert('Failed to add product to cart');
     }
+  };
+
+  const handleBuyNow = async () => {
+    const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+
+    if (!isLoggedIn) {
+      alert('You need to be logged in to proceed with the purchase. Please log in.');
+      return;
+    }
+
+    // Replace with your buy now logic or redirect to checkout
+    navigate(`/checkout/${product._id}`);
   };
 
   if (loading && !product) {
@@ -96,7 +116,7 @@ const Details = () => {
             <p className="discounted-price">₹{product.price - product.discount}</p>
           </div>
           <p className="offer-end-time">Offer ends: {new Date(product.offer_end_time).toLocaleString()}</p>
-          <button className="buy-now-btn">Buy Now</button>
+          <button className="buy-now-btn" onClick={handleBuyNow}>Buy Now</button>
           <button className="add-to-cart-btn" onClick={handleAddToCart}>Add to Cart</button>
 
           <div className="similar-products">
