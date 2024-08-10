@@ -74,8 +74,7 @@ def login():
         
         if user and user['password'] == password:
             # Prepare user data excluding the password
-            user_data = {key: value for key, value in user.items() if key != 'password'}
-            return jsonify({'success': True, 'user': user_data}), 200
+            return jsonify({'success': True, 'username': user['username']}), 200
         else:
             return jsonify({'success': False, 'message': 'Invalid email or password'}), 400
     except Exception as e:
