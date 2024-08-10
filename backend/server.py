@@ -24,7 +24,7 @@ client = MongoClient('mongodb+srv://vibudesh:040705@cluster0.bojv6ut.mongodb.net
 db = client['E-commerce']
 product_collection = db['Product details']
 user_collection = db['User']
-
+cart_collection=db['cart']
 # Temporary storage for OTPs
 otp_storage = {}
 
@@ -141,7 +141,7 @@ def get_product(id):
         return jsonify({'error': str(e)}), 500
 @app.route('/cart/add', methods=['POST'])
 def add_to_cart():
-    cart_collection = client.db.cart
+    
     data = request.json
     cart_collection.insert_one(data)
     return jsonify({'message': 'Product added to cart'}), 200
