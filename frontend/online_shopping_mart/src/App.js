@@ -8,6 +8,7 @@ import Product from './components/Product';
 import SignUp from './components/SignUp';
 import Login from './authentication/Login';
 import Details from './components/Details';
+import Profile from './authentication/Profile';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/add" element={<AddProduct />} />
       <Route path="/signup" element={<SignUp />} />
     <Route path="/login" element={<Login/>}/>
+    <Route path="/profile" element={<Profile/>}/>
        <Route path="/products/:type" element={<ProductRoute />} />
     </Routes>
   );
