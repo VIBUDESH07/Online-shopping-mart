@@ -4,14 +4,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock, faMapMarkerAlt, faFingerprint, faKey, faSms } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import '../Styles/Auth.css';
-import logo1 from '../pics/logo.svg'
+import logo1 from '../pics/logo.svg';
+
 const Signup = () => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
     confirmPassword: '',
-    address: '',
+    addressLine1: '',
+    addressLine2: '',
     upiId: '',
     pin: ''
   });
@@ -21,6 +23,7 @@ const Signup = () => {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
   const [signupSuccess, setSignupSuccess] = useState(false);
+  const [usernameCheck, setUsernameCheck] = useState('');
 
   useEffect(() => {
     if (isOtpSent) {
@@ -48,16 +51,31 @@ const Signup = () => {
     if (!formData.email) errors.email = 'Email is required';
     if (!formData.password) errors.password = 'Password is required';
     if (formData.password !== formData.confirmPassword) errors.confirmPassword = 'Passwords do not match';
-    if (!formData.address) errors.address = 'Address is required';
+    if (!formData.addressLine1) errors.addressLine1 = 'Address Line 1 is required';
     if (!formData.upiId) errors.upiId = 'UPI ID is required';
     if (!formData.pin) errors.pin = 'PIN is required';
     return errors;
   };
 
+  const handleUsernameCheck = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/check-username', { username: formData.username });
+      if (response.data.exists) {
+        setErrors(prevErrors => ({ ...prevErrors, username: 'Username is already taken' }));
+        setUsernameCheck('Username is already taken');
+      } else {
+        setErrors(prevErrors => ({ ...prevErrors, username: '' }));
+        setUsernameCheck('');
+      }
+    } catch (error) {
+      console.error('Error checking username:', error);
+    }
+  };
+
   const handleOtpRequest = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
+    if (Object.keys(validationErrors).length > 0 || usernameCheck) {
       setErrors(validationErrors);
     } else {
       try {
@@ -94,15 +112,22 @@ const Signup = () => {
       {!signupSuccess && (
         <form className="auth-form" onSubmit={isOtpSent ? handleSubmit : handleOtpRequest}>
           <h2>Sign Up</h2>
-          
+
           <div className="form-group">
             <label>
               <FontAwesomeIcon icon={faUser} /> Username
             </label>
-            <input type="text" name="username" value={formData.username} onChange={handleChange} />
+            <input 
+              type="text" 
+              name="username" 
+              value={formData.username} 
+              onChange={handleChange} 
+              onBlur={handleUsernameCheck}
+            />
             {errors.username && <p className="error">{errors.username}</p>}
+            {usernameCheck && <p className="error">{usernameCheck}</p>}
           </div>
-          
+
           <div className="form-group">
             <label>
               <FontAwesomeIcon icon={faEnvelope} /> Email
@@ -110,7 +135,7 @@ const Signup = () => {
             <input type="email" name="email" value={formData.email} onChange={handleChange} />
             {errors.email && <p className="error">{errors.email}</p>}
           </div>
-          
+
           <div className="form-group">
             <label>
               <FontAwesomeIcon icon={faLock} /> Password
@@ -118,7 +143,7 @@ const Signup = () => {
             <input type="password" name="password" value={formData.password} onChange={handleChange} />
             {errors.password && <p className="error">{errors.password}</p>}
           </div>
-          
+
           <div className="form-group">
             <label>
               <FontAwesomeIcon icon={faLock} /> Confirm Password
@@ -126,15 +151,22 @@ const Signup = () => {
             <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
             {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
           </div>
-          
+
           <div className="form-group">
             <label>
-              <FontAwesomeIcon icon={faMapMarkerAlt} /> Address
+              <FontAwesomeIcon icon={faMapMarkerAlt} /> Address Line 1
             </label>
-            <input type="text" name="address" value={formData.address} onChange={handleChange} />
-            {errors.address && <p className="error">{errors.address}</p>}
+            <input type="text" name="addressLine1" value={formData.addressLine1} onChange={handleChange} />
+            {errors.addressLine1 && <p className="error">{errors.addressLine1}</p>}
           </div>
-          
+
+          <div className="form-group">
+            <label>
+              <FontAwesomeIcon icon={faMapMarkerAlt} /> Address Line 2
+            </label>
+            <input type="text" name="addressLine2" value={formData.addressLine2} onChange={handleChange} />
+          </div>
+
           <div className="form-group">
             <label>
               <FontAwesomeIcon icon={faFingerprint} /> UPI ID
@@ -142,7 +174,7 @@ const Signup = () => {
             <input type="text" name="upiId" value={formData.upiId} onChange={handleChange} />
             {errors.upiId && <p className="error">{errors.upiId}</p>}
           </div>
-          
+
           <div className="form-group">
             <label>
               <FontAwesomeIcon icon={faKey} /> PIN
@@ -150,7 +182,7 @@ const Signup = () => {
             <input type="text" name="pin" value={formData.pin} onChange={handleChange} />
             {errors.pin && <p className="error">{errors.pin}</p>}
           </div>
-          
+
           {isOtpSent && (
             <div className="form-group">
               <label>
@@ -169,7 +201,7 @@ const Signup = () => {
       {signupSuccess && (
         <div className="welcome-container">
           <h1>Welcome to Flipkart!</h1>
-          <img src={logo1} className='logo-img'></img>
+          <img src={logo1} className='logo-img' alt="Logo" />
           <div className="fireworks">
             <div className="firework"></div>
             <div className="firework"></div>
