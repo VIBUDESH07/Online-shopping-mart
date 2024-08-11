@@ -53,40 +53,7 @@ const Header = () => {
 
   return (
     <div>
-      <div className='head-home'>
-        <div>
-          <img src={main} className='head-logo' alt="Logo" />
-        </div>
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
-          <FontAwesomeIcon icon={faSearch} className="search-icon" />
-        </div>
-        <div className="head-button-container">
-          <Link to="/login" className="login-button">
-            <FontAwesomeIcon icon={faUser} /> Login
-          </Link>
-        </div>
-        <div className="head-button-container">
-          <Link to="/cart" className="cart-button">
-            <FontAwesomeIcon icon={faShoppingCart} /> Cart
-          </Link>
-        </div>
-        <div className="head-button-container">
-          <Link to="/seller" className="seller-button">
-            <FontAwesomeIcon icon={faStore} /> Become a Seller
-          </Link>
-        </div>
-        <div className="head-button-container">
-          <Link to="/menu" className="menu-button">
-            <FontAwesomeIcon icon={faEllipsisV} />
-          </Link>
-        </div>
-      </div>
+      
       <div className='head-nav'>
         <div className='head-img'>
           <Link to="/grocery">
