@@ -22,7 +22,7 @@ const HeaderLoggedTop = ({ searchQuery, handleSearchChange }) => {
         <FontAwesomeIcon icon={faSearch} className="search-icon" />
       </div>
       <div className="head-button-container">
-        <Link to="/profile" className="profile-button">
+        <Link to="/profile" className="cart-button">
           <FontAwesomeIcon icon={faUser} /> Profile
         </Link>
       </div>
@@ -32,7 +32,7 @@ const HeaderLoggedTop = ({ searchQuery, handleSearchChange }) => {
         </Link>
       </div>
       <div className="head-button-container">
-        <Link to="/orders" className="orders-button">
+        <Link to="/orders" className="cart-button">
           <FontAwesomeIcon icon={faStore} /> My Orders
         </Link>
       </div>
