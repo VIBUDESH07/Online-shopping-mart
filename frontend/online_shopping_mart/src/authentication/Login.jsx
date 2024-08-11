@@ -40,6 +40,7 @@ const Login = () => {
         const response = await axios.post('http://localhost:5000/login', formData);
         console.log(response)
         if (response.data.success) {
+          
           navigate('/');
         } else {
           setMessage(response.data.message);
