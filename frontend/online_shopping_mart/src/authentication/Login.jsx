@@ -40,7 +40,8 @@ const Login = () => {
         const response = await axios.post('http://localhost:5000/login', formData);
         console.log(response)
         if (response.data.success) {
-          
+          localStorage.setItem('username', response.data.username);
+          localStorage.setItem('isLoggedIn', 'true');
           navigate('/');
         } else {
           setMessage(response.data.message);
