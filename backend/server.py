@@ -24,7 +24,8 @@ client = MongoClient('mongodb+srv://vibudesh:040705@cluster0.bojv6ut.mongodb.net
 db = client['E-commerce']
 product_collection = db['Product details']
 user_collection = db['User']
-cart_collection=db['cart']
+cart_collection = db['cart']
+
 # Temporary storage for OTPs
 otp_storage = {}
 
@@ -57,6 +58,7 @@ def send_otp():
     except Exception as e:
         print(f"Failed to send OTP: {e}")
         return jsonify({'error': 'Failed to send OTP'}), 500
+
 @app.route('/login', methods=['POST'])
 def login():
     try:
@@ -86,10 +88,23 @@ def signup():
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
-    address = data.get('address')
-    upiId = data.get('upiId')
+    address_line_1 = data.get('addressLine1')
+    address_line_2 = data.get('addressLine2')
+    city = data.get('city')
+    state = data.get('state')
+    zip_code = data.get('zipCode')
+    country = data.get('country')
+    upi_id = data.get('upiId')
     pin = data.get('pin')
     otp = data.get('otp')
+
+    # Check if username already exists
+    if user_collection.find_one({'username': username}):
+        return jsonify({"success": False, "message": "Username already taken"}), 400
+
+    # Check if email already exists
+    if user_collection.find_one({'email': email}):
+        return jsonify({"success": False, "message": "Email already registered"}), 400
 
     verification_result = verify_otp(email, otp)
     if not verification_result['success']:
@@ -101,8 +116,13 @@ def signup():
             'username': username,
             'email': email,
             'password': password,
-            'address': address,
-            'upiId': upiId,
+            'addressLine1': address_line_1,
+            'addressLine2': address_line_2,
+            'city': city,
+            'state': state,
+            'zipCode': zip_code,
+            'country': country,
+            'upiId': upi_id,
             'pin': pin
         })
 
@@ -125,11 +145,24 @@ def verify_otp(email, otp):
             return {'success': True, 'message': 'OTP verified successfully'}
     return {'success': False, 'message': 'Invalid OTP'}
 
+@app.route('/check-username', methods=['POST'])
+def check_username():
+    data = request.get_json()
+    username = data.get('username')
+
+    if not username:
+        return jsonify({'error': 'Username is required'}), 400
+
+    user = user_collection.find_one({'username': username})
+    if user:
+        return jsonify({'exists': True}), 200
+    else:
+        return jsonify({'exists': False}), 200
 @app.route('/product/<id>', methods=['GET'])
 def get_product(id):
     print(id)
     try:
-        product = product_collection.find_one({'_id':  ObjectId(id)})
+        product = product_collection.find_one({'_id': ObjectId(id)})
         if product:
             product['_id'] = str(product['_id'])
             return jsonify(product), 200
@@ -138,9 +171,9 @@ def get_product(id):
     except Exception as e:
         print(e)
         return jsonify({'error': str(e)}), 500
+
 @app.route('/cart/add', methods=['POST'])
 def add_to_cart():
-    
     data = request.json
     cart_collection.insert_one(data)
     return jsonify({'message': 'Product added to cart'}), 200
