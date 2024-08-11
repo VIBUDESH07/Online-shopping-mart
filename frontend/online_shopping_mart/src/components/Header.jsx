@@ -1,4 +1,3 @@
-// Header.js
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Carousel } from 'react-responsive-carousel';
@@ -19,7 +18,7 @@ import travel from '../pics/travel.webp';
 const Header = () => {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     axios.get('http://localhost:5000/products')
@@ -31,9 +30,9 @@ const Header = () => {
         console.error('Error fetching products:', error);
       });
 
-    // Simulate checking login status (replace with actual logic)
-    const userToken = localStorage.getItem('userToken');
-    setIsLoggedIn(!!userToken);
+    // Check login status from localStorage
+    const loginStatus = localStorage.getItem('isLoggedIn');
+    setIsLoggedIn(loginStatus === 'true');
   }, []);
 
   const handleSearchChange = (event) => {
@@ -43,7 +42,7 @@ const Header = () => {
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.discount.toString().includes(searchQuery) ||
-    product.description.toString().includes(searchQuery.toLowerCase())
+    product.description.toLowerCase().includes(searchQuery)
   );
 
   const groupedProducts = filteredProducts.reduce((acc, product) => {
