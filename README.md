@@ -18,9 +18,9 @@ The Online Shopping Mart is an interactive platform where users can browse produ
 ## 🛠️ **Technology Stack**
 
 - **Frontend:** React.js, React Router, Redux 
-- **Backend:** Node.js, Express.js (optional for API)
-- **Database:** MongoDB (optional for database storage)
-- **Authentication:** JWT (optional for secure authentication)
+- **Backend:** Node.js, Express.js 
+- **Database:** MongoDB 
+- **Authentication:** JWT 
 - **Deployment:** Heroku, Vercel, or any preferred hosting provider
 
 ## 📥 **Setup**
