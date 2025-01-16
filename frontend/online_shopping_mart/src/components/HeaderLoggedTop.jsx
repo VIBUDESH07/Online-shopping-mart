@@ -48,8 +48,8 @@ const HeaderLoggedTop = ({ searchQuery, handleSearchChange }) => {
           <FontAwesomeIcon icon={faEllipsisV} />
         </Link>
       </div>
-      <div className="head-button-container">
-        <button onClick={handleLogout} className="logout-button">
+      <div className="head-button-container" >
+        <button onClick={handleLogout} className="login-button">
           <FontAwesomeIcon icon={faSignOutAlt} /> Logout
         </button>
       </div>
